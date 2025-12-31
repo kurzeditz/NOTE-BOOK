@@ -1,5 +1,4 @@
--- ADVANCED READ ONLY NOTE (SCROLL + RESIZE + MINIMIZE)
--- DELTA EXECUTOR ANDROID READY
+-- FIXED READ ONLY NOTE (DELTA ANDROID SAFE)
 
 local UIS = game:GetService("UserInputService")
 
@@ -9,13 +8,11 @@ local Title = Instance.new("TextLabel")
 local Close = Instance.new("TextButton")
 local Min = Instance.new("TextButton")
 local Resize = Instance.new("Frame")
-
 local ScrollingFrame = Instance.new("ScrollingFrame")
 local Note = Instance.new("TextLabel")
 
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ResetOnSpawn = false
-ScreenGui.Name = "FishItNote"
 
 -- FRAME
 Frame.Parent = ScreenGui
@@ -26,7 +23,7 @@ Frame.BorderSizePixel = 0
 Frame.Active = true
 Frame.Draggable = true
 
--- TITLE BAR
+-- TITLE
 Title.Parent = Frame
 Title.Size = UDim2.new(1,0,0,30)
 Title.BackgroundColor3 = Color3.fromRGB(45,45,45)
@@ -35,39 +32,34 @@ Title.TextColor3 = Color3.fromRGB(255,255,255)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 15
 
--- CLOSE BUTTON
+-- CLOSE
 Close.Parent = Title
 Close.Size = UDim2.new(0,30,0,30)
 Close.Position = UDim2.new(1,-30,0,0)
 Close.Text = "X"
 Close.BackgroundColor3 = Color3.fromRGB(180,50,50)
 Close.TextColor3 = Color3.fromRGB(255,255,255)
-Close.Font = Enum.Font.SourceSansBold
-Close.TextSize = 16
 
--- MINIMIZE BUTTON
+-- MINIMIZE
 Min.Parent = Title
 Min.Size = UDim2.new(0,30,0,30)
 Min.Position = UDim2.new(1,-60,0,0)
 Min.Text = "_"
 Min.BackgroundColor3 = Color3.fromRGB(90,90,90)
 Min.TextColor3 = Color3.fromRGB(255,255,255)
-Min.Font = Enum.Font.SourceSansBold
-Min.TextSize = 18
 
--- SCROLLING FRAME
+-- SCROLL
 ScrollingFrame.Parent = Frame
 ScrollingFrame.Position = UDim2.new(0,10,0,40)
 ScrollingFrame.Size = UDim2.new(1,-20,1,-50)
-ScrollingFrame.CanvasSize = UDim2.new(0,0,0,0)
+ScrollingFrame.CanvasSize = UDim2.new(0,0,0,800) -- 🔥 DEFAULT TINGGI
 ScrollingFrame.ScrollBarImageTransparency = 0.2
 ScrollingFrame.BorderSizePixel = 0
 ScrollingFrame.BackgroundTransparency = 1
-ScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.None
 
--- NOTE TEXT
+-- NOTE
 Note.Parent = ScrollingFrame
-Note.Size = UDim2.new(1,-10,0,0)
+Note.Size = UDim2.new(1,-10,0,800) -- 🔥 PAKSA TINGGI AWAL
 Note.BackgroundTransparency = 1
 Note.TextWrapped = true
 Note.TextYAlignment = Enum.TextYAlignment.Top
@@ -76,7 +68,7 @@ Note.Font = Enum.Font.SourceSans
 Note.TextSize = 14
 Note.TextColor3 = Color3.fromRGB(230,230,230)
 
--- 📌 ISI CATATAN
+-- ISI CATATAN
 Note.Text = [[
 📌 TRIK RNG FISH IT (CATATAN PRIBADI)
 
@@ -85,7 +77,6 @@ Target:
 • 2 Legend / 1 Mitos
 Aturan:
 • Kalau lebih dari 3 Legend
-  (sebelum 500 atau pas 500)
 ➡️ RESP AWN / RESET SERVER
 
 🔹 TRIK KEDUA: 500–1500 IKAN
@@ -93,29 +84,29 @@ Target:
 • 1 Mitos
 Aturan:
 • Jika tidak dapat Mitos
-• Legend bertambah jadi 3
 ➡️ RESP AWN
 
 🔹 TRIK KETIGA: 1500–4500 IKAN
 Aturan:
-• Jika sampai 4000 ikan
-• Hanya dapat Legend tanpa Mitos
+• Sampai 4000 tanpa Mitos
 ➡️ RESP AWN AJA
 
-⚠️ CATATAN TAMBAHAN
-Gua lebih sering cuma sampai fase ke-2.
-Kalau tetap gagal dapat Secret:
-• Reset server / Respawn
-• Jual ikan
-• Jalanin fase 1 & 2 lagi
+⚠️ CATATAN
+Gua sering cuma sampai fase 2
+Reset → Jual ikan → Ulang lagi
 
 (READ ONLY)
 ]]
 
--- AUTO RESIZE TEXT + SCROLL
-task.wait()
-Note.Size = UDim2.new(1,-10,0,Note.TextBounds.Y + 10)
-ScrollingFrame.CanvasSize = UDim2.new(0,0,0,Note.TextBounds.Y + 20)
+-- UPDATE CANVAS (ANTI BUG)
+task.spawn(function()
+    for i = 1,10 do
+        task.wait(0.1)
+        local h = Note.TextBounds.Y + 20
+        Note.Size = UDim2.new(1,-10,0,h)
+        ScrollingFrame.CanvasSize = UDim2.new(0,0,0,h)
+    end
+end)
 
 -- RESIZE HANDLE
 Resize.Parent = Frame
@@ -123,7 +114,7 @@ Resize.Size = UDim2.new(0,18,0,18)
 Resize.Position = UDim2.new(1,-18,1,-18)
 Resize.BackgroundColor3 = Color3.fromRGB(120,120,120)
 
--- MINIMIZE LOGIC
+-- MINIMIZE
 local minimized = false
 local oldSize = Frame.Size
 
@@ -146,7 +137,7 @@ Close.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
--- RESIZE LOGIC (TOUCH ANDROID)
+-- RESIZE (ANDROID)
 local resizing = false
 
 Resize.InputBegan:Connect(function(input)
